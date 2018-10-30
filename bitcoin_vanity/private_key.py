@@ -1,5 +1,50 @@
 from abc import ABC, abstractmethod
 from secrets import randbits
+from hashlib import sha256
+from base58 import b58encode
+from binascii import unhexlify
+
+
+class PrivateKey:
+    def __init__(self, private_key: int, testnet=False, compressed=False):
+        self._private_key = private_key
+        self._testnet = testnet
+        self._compressed = compressed
+
+    def __int__(self):
+        return self._private_key
+
+    def __str__(self):
+        return bytes(self).decode('utf-8')
+
+    def __bytes__(self):
+        return self._wif()
+
+    def _wif(self):
+        key = self._get_key_with_extra_bytes()
+        checksum = self._calculate_checksum(key)
+        return b58encode(unhexlify(key + checksum))
+
+    def _get_key_with_extra_bytes(self):
+        return self._get_prefix() + self._get_key_as_hex_string() + self._get_suffix()
+
+    def _get_key_as_hex_string(self):
+        return '%064X' % self._private_key
+
+    def _get_prefix(self):
+        return 'ef' if self._testnet else '80'
+
+    def _get_suffix(self):
+        return '01' if self._compressed else ''
+
+    def _calculate_checksum(self, key):
+        hash = self._calculate_hash(key)
+        return hash[:8]
+
+    def _calculate_hash(self, key):
+        hash1 = sha256(unhexlify(key)).hexdigest()
+        hash2 = sha256(unhexlify(hash1)).hexdigest()
+        return hash2
 
 
 class RNG(ABC):
