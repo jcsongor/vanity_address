@@ -21,9 +21,11 @@ class PrivateKey:
         return self._wif()
 
     def _wif(self):
+        return b58encode(unhexlify(self._get_key_with_checksum()))
+
+    def _get_key_with_checksum(self):
         key = self._get_key_with_extra_bytes()
-        checksum = self._calculate_checksum(key)
-        return b58encode(unhexlify(key + checksum))
+        return key + self._calculate_checksum(key)
 
     def _get_key_with_extra_bytes(self):
         return self._get_prefix() + self._get_key_as_hex_string() + self._get_suffix()
