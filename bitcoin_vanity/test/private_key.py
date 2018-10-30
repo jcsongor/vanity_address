@@ -28,6 +28,9 @@ class PrivateKeyGeneratorTest(TestCase):
             0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
             0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141,
             0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140,
+            0x0000000000000000000000000000000000000000000000000000000000000001,
+            0x0000000000000000000000000000000000000000000000000000000000000002,
+            0x0000000000000000000000000000000000000000000000000000000000000003,
         ]
 
         self._private_key_generator = PrivateKeyGenerator(self._rng)
@@ -40,11 +43,27 @@ class PrivateKeyGeneratorTest(TestCase):
     def test_generate_private_key_returns_the_first_valid_key_it_finds(self):
         private_key = self._private_key_generator.generate_private_key()
 
-        self.assertEqual(private_key, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140),
+        self.assertEqual(int(private_key), 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140),
+
+    @patch('bitcoin_vanity.private_key.PrivateKey')
+    def test_generate_can_generate_compressed_and_test_network_keys(self, private_key):
+        self._private_key_generator.generate_private_key()
+        self._private_key_generator.generate_private_key(compressed=True)
+        self._private_key_generator.generate_private_key(testnet=True)
+        self._private_key_generator.generate_private_key(testnet=True, compressed=True)
+
+        private_key.assert_has_calls([
+            call(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140, testnet=False, compressed=False),
+            call(0x0000000000000000000000000000000000000000000000000000000000000001, testnet=False, compressed=True),
+            call(0x0000000000000000000000000000000000000000000000000000000000000002, testnet=True, compressed=False),
+            call(0x0000000000000000000000000000000000000000000000000000000000000003, testnet=True, compressed=True),
+        ])
+
 
 class PrivateKeyTest(TestCase):
     def setUp(self):
         self._private_key = PrivateKey(12345)
+
     def test_int_returns_the_private_key_as_an_integer(self):
         self.assertEqual(int(self._private_key), 12345)
 
@@ -55,7 +74,8 @@ class PrivateKeyTest(TestCase):
         bytes(self._private_key)
 
         sha256.assert_has_calls([
-            call(b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'),
+            call(
+                b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'),
             call(b'Yv\xc6\xb4\x8d\x1d\xc8b\xae\xb0\xc8\xbc1&\xa2u\x1c\xc4\x8e6sp\t\xdfh\x8a\x9f\x07\x87\xa4bJ'),
         ], True)
 
@@ -67,10 +87,11 @@ class PrivateKeyTest(TestCase):
 
         bytes(self._private_key)
 
-        b58encode.assert_called_once_with(b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009\x18\r\x8c.')
+        b58encode.assert_called_once_with(
+            b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009\x18\r\x8c.')
 
     @patch('bitcoin_vanity.private_key.b58encode')
-    def test_bytes_returns_the_b58encoded_result(self,b58encode):
+    def test_bytes_returns_the_b58encoded_result(self, b58encode):
         b58encode.return_value = b'5HpHagT65TZzG1PH3CSu63k8DbpvD8s5ip4nEB3kEss4BPiFsjb'
 
         wif = bytes(self._private_key)
@@ -95,7 +116,8 @@ class PrivateKeyTest(TestCase):
         bytes(private_key)
 
         sha256.assert_has_calls([
-            call(b'\xef\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'),
+            call(
+                b'\xef\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'),
         ], True)
 
     @patch('bitcoin_vanity.private_key.sha256')
@@ -106,5 +128,6 @@ class PrivateKeyTest(TestCase):
         bytes(private_key)
 
         sha256.assert_has_calls([
-            call(b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009\x01'),
+            call(
+                b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009\x01'),
         ], True)

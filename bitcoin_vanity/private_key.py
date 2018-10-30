@@ -18,6 +18,7 @@ class PrivateKey:
         return bytes(self).decode('utf-8')
 
     def __bytes__(self):
+        """Returns the private key in Wallet Import Format. https://en.bitcoin.it/wiki/Wallet_import_format"""
         return self._wif()
 
     def _wif(self):
@@ -66,11 +67,11 @@ class PrivateKeyGenerator:
     def __init__(self, rng: RNG):
         self._rng = rng
 
-    def generate_private_key(self) -> int:
+    def generate_private_key(self, testnet=False, compressed=False) -> PrivateKey:
         while True:
             candidate = self._rng.randbits(256)
             if self._is_valid(candidate):
-                return candidate
+                return PrivateKey(candidate, testnet=testnet, compressed=compressed)
 
     def _is_valid(self, private_key_candidate: int) -> bool:
         return private_key_candidate <= self._biggest_valid_private_key
