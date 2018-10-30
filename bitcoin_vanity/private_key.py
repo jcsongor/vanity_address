@@ -6,6 +6,10 @@ from binascii import unhexlify
 
 
 class PrivateKey:
+    TESTNET_PREFIX = 'ef'
+    NORMAL_PREFIX = '80'
+    COMPRESSED_SUFFIX = '01'
+
     def __init__(self, private_key: int, testnet=False, compressed=False):
         self._private_key = private_key
         self._testnet = testnet
@@ -22,11 +26,9 @@ class PrivateKey:
         return self._wif()
 
     def _wif(self):
-        return b58encode(unhexlify(self._get_key_with_checksum()))
-
-    def _get_key_with_checksum(self):
         key = self._get_key_with_extra_bytes()
-        return key + self._calculate_checksum(key)
+        key_with_checksum = key + self._calculate_checksum(key)
+        return b58encode(unhexlify(key_with_checksum))
 
     def _get_key_with_extra_bytes(self):
         return self._get_prefix() + self._get_key_as_hex_string() + self._get_suffix()
@@ -35,10 +37,10 @@ class PrivateKey:
         return '%064X' % self._private_key
 
     def _get_prefix(self):
-        return 'ef' if self._testnet else '80'
+        return self.TESTNET_PREFIX if self._testnet else self.NORMAL_PREFIX
 
     def _get_suffix(self):
-        return '01' if self._compressed else ''
+        return self.COMPRESSED_SUFFIX if self._compressed else ''
 
     def _calculate_checksum(self, key):
         hash = self._calculate_hash(key)
