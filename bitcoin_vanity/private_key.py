@@ -11,7 +11,7 @@ class PrivateKey:
     NORMAL_PREFIX = '80'
     COMPRESSED_SUFFIX = '01'
 
-    def __init__(self, private_key: int, testnet=False, compressed=False):
+    def __init__(self, private_key: int, testnet: bool = False, compressed: bool = False):
         self._private_key = private_key
         self._testnet = testnet
         self._compressed = compressed
