@@ -10,6 +10,7 @@ setup(
     license='MIT',
     packages=['bitcoin_vanity'],
     install_requires=[
+        'ecdsa==0.13',
         'base58==1.0.2',
     ],
     zip_safe=False
