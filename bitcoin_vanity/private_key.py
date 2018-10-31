@@ -42,14 +42,12 @@ class PrivateKey:
     def _get_suffix(self):
         return self.COMPRESSED_SUFFIX if self._compressed else ''
 
-    def _calculate_checksum(self, key):
-        hash = self._calculate_hash(key)
+    def _calculate_checksum(self, hex_str):
+        hash = self._calculate_hash(hex_str)
         return hash[:8]
 
-    def _calculate_hash(self, key):
-        hash1 = sha256(key)
-        hash2 = sha256(hash1)
-        return hash2
+    def _calculate_hash(self, hex_str):
+        return sha256(sha256(hex_str))
 
 
 class RNG(ABC):
