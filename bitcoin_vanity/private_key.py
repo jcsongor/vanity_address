@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
+
 from secrets import randbits
-from hashlib import sha256
-from base58 import b58encode
-from binascii import unhexlify
+
+from bitcoin_vanity.lib.encode import base58encode, hex_string
+from bitcoin_vanity.lib.hash import sha256
 
 
 class PrivateKey:
@@ -22,19 +23,18 @@ class PrivateKey:
         return bytes(self).decode('utf-8')
 
     def __bytes__(self):
-        """Returns the private key in Wallet Import Format. https://en.bitcoin.it/wiki/Wallet_import_format"""
+        """Returns the private key in Wallet Import Format. See https://en.bitcoin.it/wiki/Wallet_import_format"""
         return self._wif()
 
     def _wif(self):
+        return base58encode(self._get_key_with_checksum())
+
+    def _get_key_with_checksum(self):
         key = self._get_key_with_extra_bytes()
-        key_with_checksum = key + self._calculate_checksum(key)
-        return b58encode(unhexlify(key_with_checksum))
+        return key + self._calculate_checksum(key)
 
     def _get_key_with_extra_bytes(self):
-        return self._get_prefix() + self._get_key_as_hex_string() + self._get_suffix()
-
-    def _get_key_as_hex_string(self):
-        return '%064X' % self._private_key
+        return self._get_prefix() + hex_string(self._private_key) + self._get_suffix()
 
     def _get_prefix(self):
         return self.TESTNET_PREFIX if self._testnet else self.NORMAL_PREFIX
@@ -47,8 +47,8 @@ class PrivateKey:
         return hash[:8]
 
     def _calculate_hash(self, key):
-        hash1 = sha256(unhexlify(key)).hexdigest()
-        hash2 = sha256(unhexlify(hash1)).hexdigest()
+        hash1 = sha256(key)
+        hash2 = sha256(hash1)
         return hash2
 
 
