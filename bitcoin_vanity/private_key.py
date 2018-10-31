@@ -63,13 +63,14 @@ class SecretsRNG(ABC):
 
 class PrivateKeyGenerator:
     _biggest_valid_private_key = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140
+    _key_length = 256
 
     def __init__(self, rng: RNG):
         self._rng = rng
 
     def generate_private_key(self, testnet=False, compressed=False) -> PrivateKey:
         while True:
-            candidate = self._rng.randbits(256)
+            candidate = self._rng.randbits(self._key_length)
             if self._is_valid(candidate):
                 return PrivateKey(candidate, testnet=testnet, compressed=compressed)
 
