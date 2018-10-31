@@ -59,7 +59,7 @@ class RNG(ABC):
         pass
 
 
-class SecretsRNG(ABC):
+class SecretsRNG(RNG):
     def randbits(self, bits: int) -> int:
         return randbits(bits)
 
