@@ -128,3 +128,11 @@ class PrivateKeyTest(TestCase):
         bytes(private_key)
 
         sha256.assert_any_call(self._compressed_private_key)
+
+    def test_is_testnet_key_returns_false_for_normal_keys(self):
+        self.assertFalse(self._private_key.is_testnet_key())
+
+    def test_is_testnet_key_returns_false_for_testnet_keys(self):
+        private_key = PrivateKey(12345, testnet=True)
+
+        self.assertTrue(private_key.is_testnet_key())

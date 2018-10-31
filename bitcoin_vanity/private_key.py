@@ -26,6 +26,9 @@ class PrivateKey:
         """Returns the private key in Wallet Import Format. See https://en.bitcoin.it/wiki/Wallet_import_format"""
         return self._wif()
 
+    def is_testnet_key(self):
+        return self._testnet
+
     def _wif(self):
         return base58encode(self._get_key_with_checksum())
 
