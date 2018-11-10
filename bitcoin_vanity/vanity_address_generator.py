@@ -15,7 +15,7 @@ class VanityAddressGenerator:
             if pattern.match(candidate) is not None:
                 return candidate
 
-    def _generate_candidate(self):
+    def _generate_candidate(self) -> str:
         private_key = self._private_key_generator.generate_private_key()
         public_key = PublicKey(private_key)
         return str(public_key.get_address())
