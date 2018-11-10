@@ -20,27 +20,27 @@ class PublicKey:
         self._point = self._generator * int(private_key)
         self._testnet = private_key.is_testnet_key()
 
-    def point(self):
+    def point(self) -> Point:
         Point = namedtuple('Point', ['x', 'y'])
         return Point(self._point.x(), self._point.y())
 
-    def get_address(self):
+    def get_address(self) -> bytes:
         key = self._get_key_as_hex_string()
         hash = self._get_network_prefix() + self._calculate_hash(key)
         checksum = self._calculate_checksum(hash)
         return base58encode(hash + checksum)
 
-    def _get_key_as_hex_string(self):
+    def _get_key_as_hex_string(self) -> str:
         #TODO: support compressed public keys
         return '04' + hex_string(self._point.x()) + hex_string(self._point.y())
 
-    def _get_network_prefix(self):
+    def _get_network_prefix(self) -> str:
         return '6f' if self._testnet else '00'
 
-    def _calculate_hash(self, hex_str):
+    def _calculate_hash(self, hex_str: str) -> str:
         return ripemd160(sha256(hex_str))
 
-    def _calculate_checksum(self, hex_str):
+    def _calculate_checksum(self, hex_str: str) -> str:
         double_sha = sha256(sha256(hex_str))
         return double_sha[:8]
 
