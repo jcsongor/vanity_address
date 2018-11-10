@@ -55,7 +55,7 @@ class PrivateKey:
 class RNG(ABC):
     @abstractmethod
     def randbits(self, bits: int) -> int:
-        pass
+        raise NotImplementedError()
 
 
 class SecretsRNG(RNG):
