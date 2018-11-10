@@ -16,40 +16,40 @@ class PrivateKey:
         self._testnet = testnet
         self._compressed = compressed
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self._private_key
 
-    def __str__(self):
+    def __str__(self) -> str:
         return bytes(self).decode('utf-8')
 
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         """Returns the private key in Wallet Import Format. See https://en.bitcoin.it/wiki/Wallet_import_format"""
         return self._wif()
 
-    def is_testnet_key(self):
+    def is_testnet_key(self) -> bool:
         return self._testnet
 
-    def _wif(self):
+    def _wif(self) -> bytes:
         return base58encode(self._get_key_with_checksum())
 
-    def _get_key_with_checksum(self):
+    def _get_key_with_checksum(self) -> str:
         key = self._get_key_with_extra_bytes()
         return key + self._calculate_checksum(key)
 
-    def _get_key_with_extra_bytes(self):
+    def _get_key_with_extra_bytes(self) -> str:
         return self._get_prefix() + hex_string(self._private_key) + self._get_suffix()
 
-    def _get_prefix(self):
+    def _get_prefix(self) -> str:
         return self.TESTNET_PREFIX if self._testnet else self.NORMAL_PREFIX
 
-    def _get_suffix(self):
+    def _get_suffix(self) ->str:
         return self.COMPRESSED_SUFFIX if self._compressed else ''
 
-    def _calculate_checksum(self, hex_str):
+    def _calculate_checksum(self, hex_str: str) -> str:
         hash = self._calculate_hash(hex_str)
         return hash[:8]
 
-    def _calculate_hash(self, hex_str):
+    def _calculate_hash(self, hex_str: str) ->str:
         return sha256(sha256(hex_str))
 
 
@@ -71,7 +71,7 @@ class PrivateKeyGenerator:
     def __init__(self, rng: RNG):
         self._rng = rng
 
-    def generate_private_key(self, testnet=False, compressed=False) -> PrivateKey:
+    def generate_private_key(self, testnet: bool=False, compressed: bool=False) -> PrivateKey:
         while True:
             candidate = self._rng.randbits(self._key_length)
             if self._is_valid(candidate):
