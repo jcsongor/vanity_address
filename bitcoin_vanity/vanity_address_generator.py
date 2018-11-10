@@ -9,7 +9,7 @@ class VanityAddressGenerator:
         rng = SecretsRNG()
         self._private_key_generator = PrivateKeyGenerator(rng)
 
-    def generate_address(self, pattern: re) -> str:
+    def generate_matching_address(self, pattern: re) -> str:
         while True:
             candidate = self._generate_candidate()
             if pattern.match(candidate) is not None:
