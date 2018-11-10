@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-
 from secrets import randbits
 
 from bitcoin_vanity.lib.encode import base58encode, hex_string
@@ -42,14 +41,14 @@ class PrivateKey:
     def _get_prefix(self) -> str:
         return self.TESTNET_PREFIX if self._testnet else self.NORMAL_PREFIX
 
-    def _get_suffix(self) ->str:
+    def _get_suffix(self) -> str:
         return self.COMPRESSED_SUFFIX if self._compressed else ''
 
     def _calculate_checksum(self, hex_str: str) -> str:
         hash = self._calculate_hash(hex_str)
         return hash[:8]
 
-    def _calculate_hash(self, hex_str: str) ->str:
+    def _calculate_hash(self, hex_str: str) -> str:
         return sha256(sha256(hex_str))
 
 
@@ -71,7 +70,7 @@ class PrivateKeyGenerator:
     def __init__(self, rng: RNG):
         self._rng = rng
 
-    def generate_private_key(self, testnet: bool=False, compressed: bool=False) -> PrivateKey:
+    def generate_private_key(self, testnet: bool = False, compressed: bool = False) -> PrivateKey:
         while True:
             candidate = self._rng.randbits(self._key_length)
             if self._is_valid(candidate):
