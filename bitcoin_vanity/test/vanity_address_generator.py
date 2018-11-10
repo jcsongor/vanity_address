@@ -15,9 +15,9 @@ class VanityAddressGeneratorTest(TestCase):
         self._addresses = ['address1', 'address2', 'address3']
 
     def test_generate_address_generates_private_keys_until_it_finds_a_matching_one(self, generate_private_key, _):
-       self._vanity_address_generator.generate_address(self._pattern)
+        self._vanity_address_generator.generate_address(self._pattern)
 
-       self.assertEqual(generate_private_key.call_count, 3)
+        self.assertEqual(generate_private_key.call_count, 3)
 
     def test_generate_address_generates_public_keys_until_it_finds_a_matching_one(self, generate_private_key, public_key):
         generate_private_key.side_effect = self._private_keys
