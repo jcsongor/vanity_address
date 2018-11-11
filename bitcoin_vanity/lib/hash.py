@@ -5,6 +5,7 @@ from binascii import unhexlify
 def hash256(hexstr: str) -> str:
     return sha256(sha256(hexstr))
 
+
 def hash160(hexstr: str) -> str:
     return ripemd160(sha256(hexstr))
 

@@ -77,5 +77,3 @@ class PublicKeyTest(TestCase):
         address = self._public_key.get_address()
 
         self.assertEqual(address, self._address)
-
-

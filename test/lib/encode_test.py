@@ -42,6 +42,7 @@ class Base58EncodeTest(TestCase):
 
         self.assertEqual(result, self._b58encode_result)
 
+
 class HexStringTest(TestCase):
     def setUp(self):
         self._int = 1715004

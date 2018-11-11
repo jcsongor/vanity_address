@@ -31,7 +31,7 @@ class PublicKey:
         return base58encode(hash + checksum)
 
     def _get_key_as_hex_string(self) -> str:
-        #TODO: support compressed public keys
+        # TODO: support compressed public keys
         return '04' + hex_string(self._point.x()) + hex_string(self._point.y())
 
     def _get_network_prefix(self) -> str:

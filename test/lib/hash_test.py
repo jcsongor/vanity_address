@@ -32,6 +32,7 @@ class Hash256Test(TestCase):
 
         self.assertEqual(result, self._hash256_result)
 
+
 class Hash160Test(TestCase):
     def setUp(self):
         self._hex_str = '1A2B3C'
@@ -68,6 +69,7 @@ class Hash160Test(TestCase):
         result = hash160(self._hex_str)
 
         self.assertEqual(result, self._ripemd160_result)
+
 
 class Sha256Test(TestCase):
     def setUp(self):
