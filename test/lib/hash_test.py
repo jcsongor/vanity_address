@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, call, MagicMock
 
-from bitcoin_vanity.lib.hash import sha256, ripemd160, hash256
+from bitcoin_vanity.lib.hash import sha256, ripemd160, hash256, hash160
 
 
 class Hash256Test(TestCase):
@@ -31,6 +31,43 @@ class Hash256Test(TestCase):
         result = hash256(self._hex_str)
 
         self.assertEqual(result, self._hash256_result)
+
+class Hash160Test(TestCase):
+    def setUp(self):
+        self._hex_str = '1A2B3C'
+        self._sha256_result = 'f26c9c06a82db27233b98a2b1c5a778c987613f7589ef1fa04c39fe3f6e30e3b'
+        self._ripemd160_result = '92762ca96d0f1d6b494ab881ac85b3205c33934b'
+
+    @patch('bitcoin_vanity.lib.hash.sha256')
+    def test_hash256_calls_sha256(self, sha256):
+        sha256.return_value = self._sha256_result
+
+        hash160(self._hex_str)
+
+        sha256.assert_called_once_with(self._hex_str)
+
+    @patch('bitcoin_vanity.lib.hash.ripemd160')
+    @patch('bitcoin_vanity.lib.hash.sha256')
+    def test_hash256_calls_ripemd_with_the_result_of_the_sha256(self, sha256, ripemd160):
+        sha256.return_value = self._sha256_result
+
+        hash160(self._hex_str)
+
+        ripemd160.assert_called_once_with(self._sha256_result)
+
+    @patch('bitcoin_vanity.lib.hash.ripemd160')
+    def test_hash256_calls_ripemd_with_the_result_of_the_sha256(self, ripemd160):
+        ripemd_result = MagicMock()
+        ripemd160.return_value = ripemd_result
+
+        result = hash160(self._hex_str)
+
+        self.assertEqual(result, ripemd_result)
+
+    def test_hash160_returns_the_correct_hash(self):
+        result = hash160(self._hex_str)
+
+        self.assertEqual(result, self._ripemd160_result)
 
 class Sha256Test(TestCase):
     def setUp(self):
