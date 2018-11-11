@@ -136,3 +136,11 @@ class PrivateKeyTest(TestCase):
         private_key = PrivateKey(12345, testnet=True)
 
         self.assertTrue(private_key.is_testnet_key())
+
+    def test_is_compressed_returns_false_for_normal_keys(self):
+        self.assertFalse(self._private_key.is_compressed())
+
+    def test_is_compressed_returns_false_for_compresseds(self):
+        private_key = PrivateKey(12345, compressed=True)
+
+        self.assertTrue(private_key.is_compressed())

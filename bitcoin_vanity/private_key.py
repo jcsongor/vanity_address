@@ -28,6 +28,9 @@ class PrivateKey:
     def is_testnet_key(self) -> bool:
         return self._testnet
 
+    def is_compressed(self) -> bool:
+        return self._compressed
+
     def _wif(self) -> bytes:
         return base58encode(self._get_key_with_checksum())
 
