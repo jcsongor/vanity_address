@@ -45,6 +45,7 @@ class VanityAddressGeneratorTest(TestCase):
         generate_private_key.side_effect = self._private_keys
         public_key.return_value.get_address.side_effect = self._addresses
 
-        address = self._vanity_address_generator.generate_matching_address(self._pattern)
+        private_key, address = self._vanity_address_generator.generate_matching_address(self._pattern)
 
         self.assertEqual(address, 'address3')
+        self.assertEqual(private_key, 'private_key3')
