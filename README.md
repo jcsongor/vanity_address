@@ -6,6 +6,14 @@ Vanity addresses can be used:
 - to spoof other bitcoin addresses
 - for the cool factor
 
+## Installation
+```bash
+git clone https://github.com/jcsongor/bitcoin_vanity.git
+cd bitcoin_vanity
+pip install .
+
+```
+
 ## Example usage
 ```python
 import re
