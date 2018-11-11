@@ -69,11 +69,12 @@ class Sha256Test(TestCase):
     @patch('bitcoin_vanity.lib.hash.unhexlify')
     def test_sha256_returns_the_sha_hexdigest(self, unhexlify, hashlib_sha256):
         unhexlify.return_value = self._bytes
-        hashlib_sha256.return_value.hexdigest.return_value = self._sha256_result
+        sha256_result = MagicMock
+        hashlib_sha256.return_value.hexdigest.return_value = sha256_result
 
         result = sha256(self._hex_str)
 
-        self.assertEqual(result, self._sha256_result)
+        self.assertEqual(result, sha256_result)
 
     def test_sha256_returns_the_correct_hash(self):
         result = sha256(self._hex_str)
@@ -118,11 +119,12 @@ class RipemdTest(TestCase):
     @patch('bitcoin_vanity.lib.hash.unhexlify')
     def test_ripemd160_returns_the_sha_hexdigest(self, unhexlify, hashlib):
         unhexlify.return_value = self._bytes
-        hashlib.new.return_value.hexdigest.return_value = self._ripemd160_result
+        ripemd160_result = MagicMock()
+        hashlib.new.return_value.hexdigest.return_value = ripemd160_result
 
         result = ripemd160(self._hex_str)
 
-        self.assertEqual(result, self._ripemd160_result)
+        self.assertEqual(result, ripemd160_result)
 
     def test_ripemd160_returns_the_correct_hash(self):
         result = ripemd160(self._hex_str)
