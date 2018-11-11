@@ -10,7 +10,7 @@ class PublicKeyTest(TestCase):
         """see http://gobittest.appspot.com/Address for test values"""
         self._public_key = PublicKey(PrivateKey(12345))
         self._ecdsa_x = 0xF01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F
-        self._ecdsa_y = 0xEBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295
+        self._ecdsa_y = 0x0EBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295
         self._public_key_ecdsa = '04F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F0EBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295'
         self._hash160_of_public_key = 'a42d4d68affbb92a4a733df0d5bf9375456921e5'
         self._hash160_with_network_prefix = '00a42d4d68affbb92a4a733df0d5bf9375456921e5'
@@ -18,6 +18,8 @@ class PublicKeyTest(TestCase):
         self._hash256_of_hash160 = 'ea6c8ec822a1e401228ebe4aeed5118f8049fe88cca6bd29f3546d4a1a69b905'
         self._hash160_with_checksum = '00a42d4d68affbb92a4a733df0d5bf9375456921e5ea6c8ec8'
         self._address = b'1Fy668EHkFwsrBQJfZsXYVgsGzKDaZhUEj'
+        self._compressed_public_key_ecdsa_odd = '03F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F'
+        self._compressed_public_key_ecdsa_even = '021C96466679CF8831360B6AA09427E10ABD386C9168E8C6F2ACED993209B0AC08'
 
     def test_point_returns_the_correct_x_and_y_values(self):
         point = self._public_key.point()
@@ -77,3 +79,21 @@ class PublicKeyTest(TestCase):
         address = self._public_key.get_address()
 
         self.assertEqual(address, self._address)
+
+    @patch('bitcoin_vanity.public_key.hash160')
+    def test_get_address_prepends_the_correct_prefix_for_odd_compressed_keys(self, hash160):
+        hash160.return_value = self._hash160_of_public_key
+
+        public_key = PublicKey(PrivateKey(12345, compressed=True))
+        public_key.get_address()
+
+        hash160.assert_called_once_with(self._compressed_public_key_ecdsa_odd)
+
+    @patch('bitcoin_vanity.public_key.hash160')
+    def test_get_address_prepends_the_correct_prefix_for_even_compressed_keys(self, hash160):
+        hash160.return_value = self._hash160_of_public_key
+
+        public_key = PublicKey(PrivateKey(12344, compressed=True))
+        public_key.get_address()
+
+        hash160.assert_called_once_with(self._compressed_public_key_ecdsa_even)

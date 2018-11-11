@@ -19,6 +19,7 @@ class PublicKey:
     def __init__(self, private_key: PrivateKey):
         self._point = self._generator * int(private_key)
         self._testnet = private_key.is_testnet_key()
+        self._compressed = private_key.is_compressed()
 
     def point(self) -> Point:
         Point = namedtuple('Point', ['x', 'y'])
@@ -31,8 +32,12 @@ class PublicKey:
         return base58encode(hash + checksum)
 
     def _get_key_as_hex_string(self) -> str:
-        # TODO: support compressed public keys
+        if self._compressed:
+            return self._get_parity_prefix() + hex_string(self._point.x())
         return '04' + hex_string(self._point.x()) + hex_string(self._point.y())
+
+    def _get_parity_prefix(self):
+        return '03' if self._point.y() % 2 == 1 else '02'
 
     def _get_network_prefix(self) -> str:
         return '6f' if self._testnet else '00'
