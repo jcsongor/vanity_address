@@ -2,7 +2,7 @@ from collections import namedtuple
 from ecdsa.ellipticcurve import CurveFp, Point
 
 from bitcoin_vanity.lib.encode import base58encode, hex_string
-from bitcoin_vanity.lib.hash import sha256, ripemd160
+from bitcoin_vanity.lib.hash import hash256, hash160
 from bitcoin_vanity.private_key import PrivateKey
 
 
@@ -26,7 +26,7 @@ class PublicKey:
 
     def get_address(self) -> bytes:
         key = self._get_key_as_hex_string()
-        hash = self._get_network_prefix() + self._calculate_hash(key)
+        hash = self._get_network_prefix() + hash160(key)
         checksum = self._calculate_checksum(hash)
         return base58encode(hash + checksum)
 
@@ -37,10 +37,5 @@ class PublicKey:
     def _get_network_prefix(self) -> str:
         return '6f' if self._testnet else '00'
 
-    def _calculate_hash(self, hex_str: str) -> str:
-        return ripemd160(sha256(hex_str))
-
     def _calculate_checksum(self, hex_str: str) -> str:
-        double_sha = sha256(sha256(hex_str))
-        return double_sha[:8]
-
+        return hash256(hex_str)[:8]
