@@ -1,3 +1,6 @@
+
+[![Build Status](https://travis-ci.org/jcsongor/bitcoin_vanity.svg?branch=master)](https://travis-ci.org/jcsongor/bitcoin_vanity)
+
 ## Bitcoin vanity address generator
 
 Generate bitcoin addresses matching a given pattern.
