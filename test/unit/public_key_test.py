@@ -1,14 +1,14 @@
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
-from bitcoin_vanity.private_key import PrivateKey
 from bitcoin_vanity.public_key import PublicKey
 
 
 class PublicKeyTest(TestCase):
     def setUp(self):
         """see http://gobittest.appspot.com/Address for test values"""
-        self._public_key = PublicKey(PrivateKey(12345))
+        private_key = self._mock_private_key(12345)
+        self._public_key = PublicKey(private_key)
         self._public_key_ecdsa = '04F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F0EBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295'
         self._hash160_of_public_key = 'a42d4d68affbb92a4a733df0d5bf9375456921e5'
         self._hash160_with_network_prefix = '00a42d4d68affbb92a4a733df0d5bf9375456921e5'
@@ -61,8 +61,9 @@ class PublicKeyTest(TestCase):
     def test_get_address_prepends_the_correct_prefix_for_testnet_addresses(self, hash160, hash256):
         hash160.return_value = self._hash160_of_public_key
         hash256.return_value = self._hash256_of_hash160
+        private_key = self._mock_private_key(12344, testnet=True)
+        public_key = PublicKey(private_key)
 
-        public_key = PublicKey(PrivateKey(12345, testnet=True))
         public_key.get_address()
 
         hash256.assert_called_once_with(self._hash160_with_testnet_prefix)
@@ -70,8 +71,9 @@ class PublicKeyTest(TestCase):
     @patch('bitcoin_vanity.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_odd_compressed_keys(self, hash160):
         hash160.return_value = self._hash160_of_public_key
+        private_key = self._mock_private_key(12345, compressed=True)
+        public_key = PublicKey(private_key)
 
-        public_key = PublicKey(PrivateKey(12345, compressed=True))
         public_key.get_address()
 
         hash160.assert_called_once_with(self._compressed_public_key_ecdsa_odd)
@@ -79,8 +81,17 @@ class PublicKeyTest(TestCase):
     @patch('bitcoin_vanity.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_even_compressed_keys(self, hash160):
         hash160.return_value = self._hash160_of_public_key
+        private_key = self._mock_private_key(12344, compressed=True)
+        public_key = PublicKey(private_key)
 
-        public_key = PublicKey(PrivateKey(12344, compressed=True))
         public_key.get_address()
 
         hash160.assert_called_once_with(self._compressed_public_key_ecdsa_even)
+
+    def _mock_private_key(self, int_value, compressed=False, testnet=False):
+        private_key = MagicMock()
+        private_key.__int__.return_value = int_value
+        private_key.is_compressed.return_value = compressed
+        private_key.is_testnet_key.return_value = testnet
+        return private_key
+
