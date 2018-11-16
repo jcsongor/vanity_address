@@ -52,7 +52,7 @@ class Hash160Test(TestCase):
         ripemd160.assert_called_once_with(self._sha256_result)
 
     @patch('bitcoin_vanity.lib.hash.ripemd160')
-    def test_hash256_calls_ripemd_with_the_result_of_the_sha256(self, ripemd160):
+    def test_hash256_calls_the_result_of_the_ripemd(self, ripemd160):
         ripemd_result = MagicMock()
         ripemd160.return_value = ripemd_result
 
