@@ -16,10 +16,10 @@ test:
 	$(python) $(test_params)
 
 coverage:
-	coverage run $(test_params) 
+	coverage run --omit='*site-packages*' $(test_params) 
 
 coverall: coverage
 	coveralls
 
 coverage-html-report: coverage
-	coverage html --omit='*site-packages*'
+	coverage html
