@@ -1,5 +1,5 @@
 language: python
 python:
   - "3.6"
-install: make install
+install: make install-all
 script: make test && make coverall
