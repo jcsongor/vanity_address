@@ -16,4 +16,4 @@ test:
 	$(python) $(test_params)
 
 coverage:
-	coverage run $(test_params) && coverage html
+	coverage run $(test_params) && coverage html --omit='*site-packages*'
