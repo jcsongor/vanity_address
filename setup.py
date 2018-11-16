@@ -15,7 +15,8 @@ setup(
     ],
     extras_require={
         'dev': [
-            'coverage',
+            'coverage==4.5.2',
+            'coveralls==1.5.1',
         ]
     },
     zip_safe=False
