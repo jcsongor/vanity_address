@@ -19,7 +19,7 @@ class PrivateKey:
         return self._private_key
 
     def __str__(self) -> str:
-        return bytes(self).decode('utf-8')
+        return self._wif().decode('utf-8')
 
     def __bytes__(self) -> bytes:
         """Returns the private key in Wallet Import Format. See https://en.bitcoin.it/wiki/Wallet_import_format"""
