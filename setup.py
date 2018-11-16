@@ -13,5 +13,10 @@ setup(
         'ecdsa==0.13',
         'base58==1.0.2',
     ],
+    extras_require={
+        'dev': [
+            'coverage',
+        ]
+    },
     zip_safe=False
 )
