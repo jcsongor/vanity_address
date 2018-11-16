@@ -9,8 +9,6 @@ class PublicKeyTest(TestCase):
     def setUp(self):
         """see http://gobittest.appspot.com/Address for test values"""
         self._public_key = PublicKey(PrivateKey(12345))
-        self._ecdsa_x = 0xF01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F
-        self._ecdsa_y = 0x0EBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295
         self._public_key_ecdsa = '04F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F0EBA29D0F0C5408ED681984DC525982ABEFCCD9F7FF01DD26DA4999CF3F6A295'
         self._hash160_of_public_key = 'a42d4d68affbb92a4a733df0d5bf9375456921e5'
         self._hash160_with_network_prefix = '00a42d4d68affbb92a4a733df0d5bf9375456921e5'
@@ -20,12 +18,6 @@ class PublicKeyTest(TestCase):
         self._address = b'1Fy668EHkFwsrBQJfZsXYVgsGzKDaZhUEj'
         self._compressed_public_key_ecdsa_odd = '03F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F'
         self._compressed_public_key_ecdsa_even = '021C96466679CF8831360B6AA09427E10ABD386C9168E8C6F2ACED993209B0AC08'
-
-    def test_point_returns_the_correct_x_and_y_values(self):
-        point = self._public_key.point()
-
-        self.assertEqual(point.x, self._ecdsa_x)
-        self.assertEqual(point.y, self._ecdsa_y)
 
     @patch('bitcoin_vanity.public_key.hash160')
     def test_get_address_hashes_the_public_key_with_hash160(self, hash160):
@@ -74,11 +66,6 @@ class PublicKeyTest(TestCase):
         public_key.get_address()
 
         hash256.assert_called_once_with(self._hash160_with_testnet_prefix)
-
-    def test_get_address_returns_the_correct_address_in_wif_format(self):
-        address = self._public_key.get_address()
-
-        self.assertEqual(address, self._address)
 
     @patch('bitcoin_vanity.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_odd_compressed_keys(self, hash160):

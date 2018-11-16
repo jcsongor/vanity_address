@@ -37,10 +37,6 @@ class Base58EncodeTest(TestCase):
 
         self.assertEqual(result, self._b58encode_result)
 
-    def test_base58encode_returns_the_correct_hash(self):
-        result = base58encode(self._hex_str)
-
-        self.assertEqual(result, self._b58encode_result)
 
 
 class HexStringTest(TestCase):

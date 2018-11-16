@@ -27,11 +27,6 @@ class Hash256Test(TestCase):
 
         self.assertEqual(result, second_hash)
 
-    def test_hash256_returns_the_correct_hash(self):
-        result = hash256(self._hex_str)
-
-        self.assertEqual(result, self._hash256_result)
-
 
 class Hash160Test(TestCase):
     def setUp(self):
@@ -164,8 +159,3 @@ class RipemdTest(TestCase):
         result = ripemd160(self._hex_str)
 
         self.assertEqual(result, ripemd160_result)
-
-    def test_ripemd160_returns_the_correct_hash(self):
-        result = ripemd160(self._hex_str)
-
-        self.assertEqual(result, self._ripemd160_result)

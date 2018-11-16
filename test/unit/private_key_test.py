@@ -69,9 +69,6 @@ class PrivateKeyTest(TestCase):
         self._second_hash = '180D8C2E6CBBFFCE35A0BB172CBAC966FD9AC8B7F5CB9D70C3DC8C70B90AC88C'
         self._address = b'5HpHagT65TZzG1PH3CSu63k8DbpvD8s5ip4nEB3kEss4BPiFsjb'
 
-    def test_int_returns_the_private_key_as_an_integer(self):
-        self.assertEqual(int(self._private_key), 12345)
-
     @patch('bitcoin_vanity.private_key.sha256')
     def test_bytes_hashes_the_key_twice_with_sha26(self, sha256):
         sha256.return_value = self._first_hash
@@ -100,16 +97,6 @@ class PrivateKeyTest(TestCase):
         wif = bytes(self._private_key)
 
         self.assertEqual(wif, self._address)
-
-    def test_bytes_returns_the_private_key_in_wif_format(self):
-        wif = bytes(self._private_key)
-
-        self.assertEqual(wif, self._address)
-
-    def test_str_returns_the_private_key_in_wif_format(self):
-        wif = str(self._private_key)
-
-        self.assertEqual(wif, self._address.decode('utf-8'))
 
     @patch('bitcoin_vanity.private_key.sha256')
     def test_bytes_uses_the_correct_prefix_for_a_testnet_address(self, sha256):
