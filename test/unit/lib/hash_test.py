@@ -60,11 +60,6 @@ class Hash160Test(TestCase):
 
         self.assertEqual(result, ripemd_result)
 
-    def test_hash160_returns_the_correct_hash(self):
-        result = hash160(self._hex_str)
-
-        self.assertEqual(result, self._ripemd160_result)
-
 
 class Sha256Test(TestCase):
     def setUp(self):
