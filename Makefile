@@ -19,7 +19,7 @@ coverage:
 	coverage run $(test_params) 
 
 coverall: coverage
-	coverage
+	coveralls
 
 coverage-html-report: coverage
 	coverage html --omit='*site-packages*'
