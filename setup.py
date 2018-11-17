@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open('README.md') as readme:
+    long_description = readme.read()
+
 setup(
     name='bitcoin_vanity',
     version='0.1',
@@ -8,6 +11,7 @@ setup(
     author='Jozsa Csongor',
     author_email='jozsa.csongor@gmail.com',
     license='MIT',
+    long_description=long_description,
     packages=['bitcoin_vanity'],
     install_requires=[
         'ecdsa==0.13',
