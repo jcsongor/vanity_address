@@ -1,5 +1,5 @@
 from multiprocessing import Queue, Event, Process
-from re import Pattern
+from typing import Pattern
 from bitcoin_vanity.private_key import PrivateKeyGenerator, SecretsRNG, PrivateKey
 from bitcoin_vanity.public_key import PublicKey
 
