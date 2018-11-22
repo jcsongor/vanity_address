@@ -1,12 +1,19 @@
 #!/usr/bin/env python
-import re
+from bitcoin_vanity.vanity_address import VanityAddressGenerator
+from pprint import pprint
 
-from bitcoin_vanity.vanity_address import Generator
+def callback(address):
+    return address.startswith(b'11')
 
-vanity_address_generator = Generator()
-pattern = re.compile('.*12[AB].*')
-addresses = vanity_address_generator.generate(pattern, 3)
+# Generate an address
+vanity_address = VanityAddressGenerator.generate_one(callback=callback)
 
-for private_key, address in addresses:
-    print('Private key: %s' % int(private_key))
-    print('Address: %s' % address)
+print("Address:\t{vanity_address.address}\nPrivate key:\t{vanity_address.private_key}".format(vanity_address=vanity_address))
+
+# Generate multiple addresses
+addresses = []
+for address in VanityAddressGenerator.generate(callback=callback):
+    addresses.append(address)
+    if len(addresses) >= 5:
+        break
+pprint(addresses)
