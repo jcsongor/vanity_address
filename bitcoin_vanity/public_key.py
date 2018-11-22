@@ -16,6 +16,12 @@ class PublicKey:
     _curve = CurveFp(_p, _a, _b)
     _generator = Point(_curve, _Gx, _Gy, _r)
 
+    UNCOMPRESSED_PREFIX = '04'
+    ODD_PREFIX = '03'
+    EVEN_PREFIX = '02'
+    TESTNET_PREFIX = '6f'
+    MAINNET_PREFIX = '00'
+
     def __init__(self, private_key: PrivateKey):
         self._point = self._generator * int(private_key)
         self._testnet = private_key.is_testnet_key()
@@ -34,13 +40,13 @@ class PublicKey:
     def _get_key_as_hex_string(self) -> str:
         if self._compressed:
             return self._get_parity_prefix() + hex_string(self._point.x())
-        return '04' + hex_string(self._point.x()) + hex_string(self._point.y())
+        return self.UNCOMPRESSED_PREFIX + hex_string(self._point.x()) + hex_string(self._point.y())
 
     def _get_parity_prefix(self):
-        return '03' if self._point.y() % 2 == 1 else '02'
+        return self.ODD_PREFIX if self._point.y() % 2 == 1 else self.EVEN_PREFIX
 
     def _get_network_prefix(self) -> str:
-        return '6f' if self._testnet else '00'
+        return self.TESTNET_PREFIX if self._testnet else self.MAINNET_PREFIX
 
     def _calculate_checksum(self, hex_str: str) -> str:
         return hash256(hex_str)[:8]
