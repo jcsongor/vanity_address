@@ -1,55 +1,64 @@
-from multiprocessing import Queue, Event, Process
-from typing import Pattern
-from bitcoin_vanity.private_key import PrivateKeyGenerator, SecretsRNG, PrivateKey
+from collections import namedtuple
+from multiprocessing import Event, Process, Queue
+from typing import Callable, Generator
+from bitcoin_vanity.private_key import PrivateKey, PrivateKeyGenerator, SecretsRNG
 from bitcoin_vanity.public_key import PublicKey
 
+VanityAddress = namedtuple('VanityAddress', ['address', 'private_key'])
 
-class Generator:
-    def __init__(self):
-        self._result_queue = Queue()
-        self._terminate_event = Event()
-        self._worker = Worker(CandidateGenerator())
+class VanityAddressGenerator:
+    @staticmethod
+    def generate(callback: Callable[[bytes], bool]) -> Generator[VanityAddress, None, None]:
+        with CandidateGenerator() as addresses:
+            for vanity_address in addresses:
+                if callback(vanity_address.address):
+                    yield vanity_address
 
-    def generate(self, pattern: Pattern, address_count: int = 1, worker_count: int = 4) -> list((PrivateKey, str)):
-        self._start_workers(worker_count)
+    @staticmethod
+    def generate_one(callback: Callable[[bytes], bool]) -> (bytes, PrivateKey):
+        with CandidateGenerator() as addresses:
+            for vanity_address in addresses:
+                if callback(vanity_address.address):
+                    return vanity_address
 
-        addresses = self._collect_results(address_count, pattern)
-
-        self._terminate_event.set()
-
-        return addresses
-
-    def _collect_results(self, address_count, pattern):
-        addresses = []
-        while len(addresses) < address_count:
-            private_key, address = self._result_queue.get()
-            if pattern.match(address) is not None:
-                addresses.append((private_key, address))
-        return addresses
-
-    def _start_workers(self, worker_count):
-        for _ in range(worker_count):
-            self._start_worker()
-
-    def _start_worker(self):
-        Process(target=self._worker.run, args=(self._result_queue, self._terminate_event)).start()
 
 
 class CandidateGenerator:
+    def __init__(self, worker_count: int = 4):
+        self._result_queue = Queue()
+        self._terminate_event = Event()
+        self._worker = Worker()
+        self._worker_count = worker_count
+
+    def __enter__(self) -> Generator[VanityAddress, None, None]:
+        self._start_workers(self._worker_count)
+        return self._generate()
+
+    def __exit__(self, *args, **kwargs):
+        self._terminate_event.set()
+
+    def _generate(self) -> Generator[VanityAddress, None, None]:
+        while True:
+            yield self._result_queue.get()
+
+    def _start_workers(self, worker_count) -> None:
+        for _ in range(worker_count):
+            self._start_worker()
+
+    def _start_worker(self) -> None:
+        Process(target=self._worker.run, args=(self._result_queue, self._terminate_event)).start()
+
+
+class Worker:
     def __init__(self):
         rng = SecretsRNG()
         self._private_key_generator = PrivateKeyGenerator(rng)
 
-    def generate_candidate(self) -> (PrivateKey, str):
+    def run(self, result_queue: Queue, terminate_event: Event) -> None:
+        while not terminate_event.is_set():
+            result_queue.put(self._generate_candidate())
+
+    def _generate_candidate(self) -> VanityAddress:
         private_key = self._private_key_generator.generate_private_key()
         public_key = PublicKey(private_key)
-        return private_key, str(public_key.get_address())
-
-
-class Worker:
-    def __init__(self, candidate_generator: CandidateGenerator):
-        self._candidate_generator = candidate_generator
-
-    def run(self, result_queue: Queue, terminate_event: Event):
-        while not terminate_event.is_set():
-            result_queue.put(self._candidate_generator.generate_candidate())
+        return VanityAddress(public_key.get_address(), private_key)
