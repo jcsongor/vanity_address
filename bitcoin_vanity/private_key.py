@@ -7,7 +7,7 @@ from bitcoin_vanity.lib.hash import sha256
 
 class PrivateKey:
     TESTNET_PREFIX = 'ef'
-    NORMAL_PREFIX = '80'
+    MAINNET_PREFIX = '80'
     COMPRESSED_SUFFIX = '01'
 
     def __init__(self, private_key: int, testnet: bool = False, compressed: bool = False):
@@ -42,7 +42,7 @@ class PrivateKey:
         return self._get_prefix() + hex_string(self._private_key) + self._get_suffix()
 
     def _get_prefix(self) -> str:
-        return self.TESTNET_PREFIX if self._testnet else self.NORMAL_PREFIX
+        return self.TESTNET_PREFIX if self._testnet else self.MAINNET_PREFIX
 
     def _get_suffix(self) -> str:
         return self.COMPRESSED_SUFFIX if self._compressed else ''
