@@ -13,6 +13,9 @@ setup(
     license='MIT',
     long_description=long_description,
     packages=['vanity_address'],
+    entry_points={
+        'console_scripts': ['vanityaddr=vanity_address.generate:main'],
+    },
     install_requires=[
         'ecdsa==0.13',
         'base58==1.0.2',

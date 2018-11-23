@@ -29,3 +29,10 @@ for address in VanityAddressGenerator.generate(callback=callback):
     if len(addresses) >= 5:
         break
 ```
+
+## Using from the command line
+
+```bash
+$ vanityaddr PATTERN 
+
+```
