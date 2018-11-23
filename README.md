@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/jcsongor/vanity_address.svg?branch=master)](https://travis-ci.org/jcsongor/bitcoin_vanity)
+[![Build Status](https://travis-ci.org/jcsongor/vanity_address.svg?branch=master)](https://travis-ci.org/jcsongor/vanity_address)
 [![Coverage Status](https://coveralls.io/repos/github/jcsongor/vanity_address/badge.svg)](https://coveralls.io/github/jcsongor/vanity_address)
 
 ## Bitcoin vanity address generator
