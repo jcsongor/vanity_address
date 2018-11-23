@@ -16,6 +16,9 @@ pip install .
 
 ## Example usage
 ```python
+def callback(address):
+    return address.startswith(b'11')
+    
 # Generate an address
 vanity_address = VanityAddressGenerator.generate_one(callback=callback)
 
