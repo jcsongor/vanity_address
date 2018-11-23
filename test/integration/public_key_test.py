@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from bitcoin_vanity.private_key import PrivateKey
-from bitcoin_vanity.public_key import PublicKey
+from vanity_address.private_key import PrivateKey
+from vanity_address.public_key import PublicKey
 
 
 class PublicKeyTest(TestCase):

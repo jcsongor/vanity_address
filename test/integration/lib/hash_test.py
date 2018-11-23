@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from bitcoin_vanity.lib.hash import hash256, ripemd160
+from vanity_address.lib.hash import hash256, ripemd160
 
 
 class Hash256Test(TestCase):

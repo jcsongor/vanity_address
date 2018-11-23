@@ -2,11 +2,11 @@ import re
 from unittest import TestCase
 from unittest.mock import MagicMock, call, patch
 
-from bitcoin_vanity.vanity_address import Worker, CandidateGenerator, VanityAddress, VanityAddressGenerator
+from vanity_address.vanity_address import Worker, CandidateGenerator, VanityAddress, VanityAddressGenerator
 from test import Patcher
 
 
-@patch('bitcoin_vanity.vanity_address.CandidateGenerator')
+@patch('vanity_address.vanity_address.CandidateGenerator')
 class VanityAddressGeneratorTest(TestCase, Patcher):
     def setUp(self):
         self._callback = MagicMock()
@@ -44,10 +44,10 @@ class VanityAddressGeneratorTest(TestCase, Patcher):
 
 class CandidateGeneratorTest(TestCase, Patcher):
     def setUp(self):
-        self._event = self._patch('bitcoin_vanity.vanity_address.Event')
-        self._queue = self._patch('bitcoin_vanity.vanity_address.Queue')
-        self._process = self._patch('bitcoin_vanity.vanity_address.Process')
-        self._worker = self._patch('bitcoin_vanity.vanity_address.Worker')
+        self._event = self._patch('vanity_address.vanity_address.Event')
+        self._queue = self._patch('vanity_address.vanity_address.Queue')
+        self._process = self._patch('vanity_address.vanity_address.Process')
+        self._worker = self._patch('vanity_address.vanity_address.Worker')
 
         self._generator = CandidateGenerator(2)
 
@@ -92,9 +92,9 @@ class CandidateGeneratorTest(TestCase, Patcher):
 
 class WorkerTest(TestCase, Patcher):
     def setUp(self):
-        self._rng = self._patch('bitcoin_vanity.vanity_address.SecretsRNG')
-        self._private_key_generator = self._patch('bitcoin_vanity.vanity_address.PrivateKeyGenerator')
-        self._public_key = self._patch('bitcoin_vanity.vanity_address.PublicKey')
+        self._rng = self._patch('vanity_address.vanity_address.SecretsRNG')
+        self._private_key_generator = self._patch('vanity_address.vanity_address.PrivateKeyGenerator')
+        self._public_key = self._patch('vanity_address.vanity_address.PublicKey')
         self._result_queue = MagicMock()
 
         self._terminate_event = MagicMock()

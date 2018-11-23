@@ -1,9 +1,9 @@
 from collections import namedtuple
 from ecdsa.ellipticcurve import CurveFp, Point
 
-from bitcoin_vanity.lib.encode import base58encode, hex_string
-from bitcoin_vanity.lib.hash import hash256, hash160
-from bitcoin_vanity.private_key import PrivateKey
+from vanity_address.lib.encode import base58encode, hex_string
+from vanity_address.lib.hash import hash256, hash160
+from vanity_address.private_key import PrivateKey
 
 
 class PublicKey:

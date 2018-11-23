@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from bitcoin_vanity.lib.encode import base58encode, hex_string
+from vanity_address.lib.encode import base58encode, hex_string
 
 
 class Base58EncodeTest(TestCase):
@@ -10,7 +10,7 @@ class Base58EncodeTest(TestCase):
         self._bytes = b'\x1a+<'
         self._b58encode_result = b'9np3'
 
-    @patch('bitcoin_vanity.lib.encode.unhexlify')
+    @patch('vanity_address.lib.encode.unhexlify')
     def test_base58encode_calls_unhexlify(self, unhexlify):
         unhexlify.return_value = self._bytes
 
@@ -18,8 +18,8 @@ class Base58EncodeTest(TestCase):
 
         unhexlify.assert_called_once_with(self._hex_str)
 
-    @patch('bitcoin_vanity.lib.encode.b58encode')
-    @patch('bitcoin_vanity.lib.encode.unhexlify')
+    @patch('vanity_address.lib.encode.b58encode')
+    @patch('vanity_address.lib.encode.unhexlify')
     def test_base58encode_calls_hashlib_base58encode(self, unhexlify, b58encode):
         unhexlify.return_value = self._bytes
 
@@ -27,8 +27,8 @@ class Base58EncodeTest(TestCase):
 
         b58encode.assert_called_once_with(self._bytes)
 
-    @patch('bitcoin_vanity.lib.encode.b58encode')
-    @patch('bitcoin_vanity.lib.encode.unhexlify')
+    @patch('vanity_address.lib.encode.b58encode')
+    @patch('vanity_address.lib.encode.unhexlify')
     def test_base58encode_returns_the_base58encoded_string(self, unhexlify, b58encode):
         unhexlify.return_value = self._bytes
         b58encode.return_value = self._b58encode_result

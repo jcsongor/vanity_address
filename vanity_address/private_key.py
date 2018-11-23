@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from secrets import randbits
 
-from bitcoin_vanity.lib.encode import base58encode, hex_string
-from bitcoin_vanity.lib.hash import sha256
+from vanity_address.lib.encode import base58encode, hex_string
+from vanity_address.lib.hash import sha256
 
 
 class PrivateKey:

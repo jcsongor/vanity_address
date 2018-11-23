@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from bitcoin_vanity.lib.encode import base58encode
+from vanity_address.lib.encode import base58encode
 
 
 class Base58EncodeTest(TestCase):
