@@ -1,4 +1,4 @@
-.PHONY: test install install-dev install-all coverage
+.PHONY: test install install-dev install-all coverage build release test-release
 
 python = /usr/bin/env python 
 pip = /usr/bin/env pip 
@@ -23,3 +23,12 @@ coverall: coverage
 
 coverage-html-report: coverage
 	coverage html
+
+build:
+	python setup.py sdist bdist_wheel
+
+release:
+	twine upload dist/*
+
+test-release:
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
