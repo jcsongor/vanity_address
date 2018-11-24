@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from vanity_address.private_key import PrivateKey
+from vanity_address.coins.private_key import PrivateKey
 
 
 class PrivateKeyTest(TestCase):

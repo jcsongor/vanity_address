@@ -1,9 +1,10 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock, call
-from vanity_address.private_key import PrivateKeyGenerator, SecretsRNG, PrivateKey
+
+from vanity_address.coins.private_key import PrivateKeyGenerator, SecretsRNG, PrivateKey
 
 
-@patch('vanity_address.private_key.randbits')
+@patch('vanity_address.coins.private_key.randbits')
 class SecretsRNGTest(TestCase):
     def setUp(self):
         self._rng = SecretsRNG()
@@ -42,7 +43,7 @@ class PrivateKeyGeneratorTest(TestCase):
 
         self.assertEqual(int(private_key), self._valid_private_keys[0]),
 
-    @patch('vanity_address.private_key.PrivateKey')
+    @patch('vanity_address.coins.private_key.PrivateKey')
     def test_generate_can_generate_compressed_and_test_network_keys(self, private_key):
         self._private_key_generator.generate_private_key()
         self._private_key_generator.generate_private_key(compressed=True)
@@ -69,7 +70,7 @@ class PrivateKeyTest(TestCase):
         self._second_hash = '180D8C2E6CBBFFCE35A0BB172CBAC966FD9AC8B7F5CB9D70C3DC8C70B90AC88C'
         self._address = b'5HpHagT65TZzG1PH3CSu63k8DbpvD8s5ip4nEB3kEss4BPiFsjb'
 
-    @patch('vanity_address.private_key.sha256')
+    @patch('vanity_address.coins.private_key.sha256')
     def test_bytes_hashes_the_key_twice_with_sha26(self, sha256):
         sha256.return_value = self._first_hash
 
@@ -80,8 +81,8 @@ class PrivateKeyTest(TestCase):
             call(self._first_hash),
         ])
 
-    @patch('vanity_address.private_key.base58encode')
-    @patch('vanity_address.private_key.sha256')
+    @patch('vanity_address.coins.private_key.base58encode')
+    @patch('vanity_address.coins.private_key.sha256')
     def test_bytes_base58_encodes_the_private_key_with_the_correct_checksum(self, sha256, base58encode):
         sha256.return_value = self._second_hash
         base58encode.return_value = self._address
@@ -90,7 +91,7 @@ class PrivateKeyTest(TestCase):
 
         base58encode.assert_called_once_with(self._private_key_with_checksum)
 
-    @patch('vanity_address.private_key.base58encode')
+    @patch('vanity_address.coins.private_key.base58encode')
     def test_bytes_returns_the_base58encoded_result(self, base58encode):
         base58encode.return_value = self._address
 
@@ -98,7 +99,7 @@ class PrivateKeyTest(TestCase):
 
         self.assertEqual(wif, self._address)
 
-    @patch('vanity_address.private_key.sha256')
+    @patch('vanity_address.coins.private_key.sha256')
     def test_bytes_uses_the_correct_prefix_for_a_testnet_address(self, sha256):
         private_key = PrivateKey(12345, testnet=True)
         sha256.return_value = self._first_hash
@@ -107,7 +108,7 @@ class PrivateKeyTest(TestCase):
 
         sha256.assert_any_call(self._testnet_private_key)
 
-    @patch('vanity_address.private_key.sha256')
+    @patch('vanity_address.coins.private_key.sha256')
     def test_bytes_adds_the_correct_suffix_for_a_compressed_address(self, sha256):
         private_key = PrivateKey(12345, compressed=True)
         sha256.return_value = self._first_hash

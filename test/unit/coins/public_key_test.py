@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from vanity_address.public_key import PublicKey
+from vanity_address.coins.public_key import PublicKey
 
 
 class PublicKeyTest(TestCase):
@@ -19,7 +19,7 @@ class PublicKeyTest(TestCase):
         self._compressed_public_key_ecdsa_odd = '03F01D6B9018AB421DD410404CB869072065522BF85734008F105CF385A023A80F'
         self._compressed_public_key_ecdsa_even = '021C96466679CF8831360B6AA09427E10ABD386C9168E8C6F2ACED993209B0AC08'
 
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_hashes_the_public_key_with_hash160(self, hash160):
         hash160.return_value = self._hash160_of_public_key
 
@@ -27,8 +27,8 @@ class PublicKeyTest(TestCase):
 
         hash160.assert_called_once_with(self._public_key_ecdsa)
 
-    @patch('vanity_address.public_key.hash256')
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.hash256')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_hashes_the_ripemd_of_the_sha_of_the_public_key_with_hash256(self, hash160, hash256):
         hash160.return_value = self._hash160_of_public_key
         hash256.return_value = self._hash256_of_hash160
@@ -37,9 +37,9 @@ class PublicKeyTest(TestCase):
 
         hash256.assert_called_once_with(self._hash160_with_network_prefix)
 
-    @patch('vanity_address.public_key.base58encode')
-    @patch('vanity_address.public_key.hash256')
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.base58encode')
+    @patch('vanity_address.coins.public_key.hash256')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_base58encodes_the_ripemd_and_the_checksum(self, hash160, hash256, base58encode):
         hash160.return_value = self._hash160_of_public_key
         hash256.return_value = self._hash256_of_hash160
@@ -48,7 +48,7 @@ class PublicKeyTest(TestCase):
 
         base58encode.assert_called_once_with(self._hash160_with_checksum)
 
-    @patch('vanity_address.public_key.base58encode')
+    @patch('vanity_address.coins.public_key.base58encode')
     def test_get_address_returns_the_base58encoded_address(self, base58encode):
         base58encode.return_value = self._address
 
@@ -56,8 +56,8 @@ class PublicKeyTest(TestCase):
 
         self.assertEqual(address, self._address)
 
-    @patch('vanity_address.public_key.hash256')
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.hash256')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_testnet_addresses(self, hash160, hash256):
         hash160.return_value = self._hash160_of_public_key
         hash256.return_value = self._hash256_of_hash160
@@ -68,7 +68,7 @@ class PublicKeyTest(TestCase):
 
         hash256.assert_called_once_with(self._hash160_with_testnet_prefix)
 
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_odd_compressed_keys(self, hash160):
         hash160.return_value = self._hash160_of_public_key
         private_key = self._mock_private_key(12345, compressed=True)
@@ -78,7 +78,7 @@ class PublicKeyTest(TestCase):
 
         hash160.assert_called_once_with(self._compressed_public_key_ecdsa_odd)
 
-    @patch('vanity_address.public_key.hash160')
+    @patch('vanity_address.coins.public_key.hash160')
     def test_get_address_prepends_the_correct_prefix_for_even_compressed_keys(self, hash160):
         hash160.return_value = self._hash160_of_public_key
         private_key = self._mock_private_key(12344, compressed=True)

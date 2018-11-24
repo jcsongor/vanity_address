@@ -1,9 +1,10 @@
 from collections import namedtuple
+
 from ecdsa.ellipticcurve import CurveFp, Point
 
+from vanity_address.coins.private_key import PrivateKey
 from vanity_address.lib.encode import base58encode, hex_string
 from vanity_address.lib.hash import hash256, hash160
-from vanity_address.private_key import PrivateKey
 
 
 class PublicKey:
