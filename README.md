@@ -7,12 +7,12 @@
 Generate bitcoin vanity addresses matched by an arbitrary callback.
 
 ## Installation
-### Using pip
+### Using from PyPI
 ```bash
 pip install vanity_address
 ```
 
-### Install from source
+### Install the latest version from github
 ```bash
 git clone https://github.com/jcsongor/vanity_address.git
 cd vanity_address
