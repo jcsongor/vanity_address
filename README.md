@@ -17,18 +17,25 @@ pip install vanity_address
 git clone https://github.com/jcsongor/vanity_address.git
 cd vanity_address
 pip install .
-
 ```
 
-## Example usage
+## Usage
+### Using the command line interface
+
+```bash
+$ vanityaddr PATTERN 
+```
+
+### Using the python module
+#### Generate an address
 ```python
 def callback(address):
     return address.startswith(b'11')
     
-# Generate an address
 vanity_address = VanityAddressGenerator.generate_one(callback=callback)
-
-# Generate multiple addresses
+```
+#### Generate multiple addresses
+```python
 addresses = []
 for address in VanityAddressGenerator.generate(callback=callback):
     addresses.append(address)
@@ -36,9 +43,3 @@ for address in VanityAddressGenerator.generate(callback=callback):
         break
 ```
 
-## Using from the command line
-
-```bash
-$ vanityaddr PATTERN 
-
-```
