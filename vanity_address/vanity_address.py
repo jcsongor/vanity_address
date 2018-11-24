@@ -2,8 +2,7 @@ from collections import namedtuple
 from multiprocessing import Event, Process, Queue
 from typing import Callable, Generator
 
-from vanity_address.coins.private_key import PrivateKey, PrivateKeyGenerator, SecretsRNG
-from vanity_address.coins.public_key import PublicKey
+from vanity_address.coins.bitcoin import PublicKey, PrivateKey, PrivateKeyGenerator, SecretsRNG
 
 VanityAddress = namedtuple('VanityAddress', ['address', 'private_key'])
 
