@@ -136,8 +136,7 @@ class RipemdTest(TestCase):
 
     @patch('vanity_address.lib.hash.hashlib')
     @patch('vanity_address.lib.hash.unhexlify')
-    def test_ripemd160_gets_sha_hexdigest(self, unhexlify, hashlib):
-        unhexlify.return_value = self._bytes
+    def test_ripemd160_gets_sha_hexdigest(self, _, hashlib):
         hashlib.new.return_value.hexdigest.return_value = self._ripemd160_result
 
         ripemd160(self._hex_str)
@@ -146,14 +145,12 @@ class RipemdTest(TestCase):
 
     @patch('vanity_address.lib.hash.hashlib')
     @patch('vanity_address.lib.hash.unhexlify')
-    def test_ripemd160_returns_the_sha_hexdigest(self, unhexlify, hashlib):
-        unhexlify.return_value = self._bytes
-        ripemd160_result = MagicMock()
-        hashlib.new.return_value.hexdigest.return_value = ripemd160_result
+    def test_ripemd160_returns_the_sha_hexdigest(self, _, hashlib):
+        hashlib.new.return_value.hexdigest.return_value = self._ripemd160_result
 
         result = ripemd160(self._hex_str)
 
-        self.assertEqual(result, ripemd160_result)
+        self.assertEqual(result, self._ripemd160_result)
 
     def test_ripemd160_returns_the_correct_hash(self):
         result = ripemd160(self._hex_str)
@@ -186,7 +183,14 @@ class Keccak256Test(TestCase):
 
     @patch('vanity_address.lib.hash.hashlib.sha3_256')
     @patch('vanity_address.lib.hash.unhexlify')
-    def test_keccak256_returns_the_result_of_sha3_256(self, _, sha3_256):
+    def test_keccak256_gets_the_hexdigest_of_sha3_256(self, _, sha3_256):
+        keccak256(self._hex_str)
+
+        sha3_256.return_value.hexdigest.assert_called_once()
+
+    @patch('vanity_address.lib.hash.hashlib.sha3_256')
+    @patch('vanity_address.lib.hash.unhexlify')
+    def test_keccak256_returns_the_hexdigest_of_sha3_256(self, _, sha3_256):
         sha3_256.return_value.hexdigest.return_value = self._sha3_256_result
 
         result = keccak256(self._hex_str)
