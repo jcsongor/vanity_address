@@ -16,3 +16,7 @@ def sha256(hexstr: str) -> str:
 
 def ripemd160(hexstr: str) -> str:
     return hashlib.new('ripemd160', unhexlify(hexstr)).hexdigest()
+
+
+def keccak256(hexstr: str) -> str:
+    return hashlib.sha3_256(unhexlify(hexstr)).hexdigest()

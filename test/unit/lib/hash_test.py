@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, call, MagicMock
 
-from vanity_address.lib.hash import sha256, ripemd160, hash256, hash160
+from vanity_address.lib.hash import sha256, ripemd160, hash256, hash160, keccak256
 
 
 class Hash256Test(TestCase):
@@ -159,3 +159,41 @@ class RipemdTest(TestCase):
         result = ripemd160(self._hex_str)
 
         self.assertEqual(result, self._ripemd160_result)
+
+
+class Keccak256Test(TestCase):
+    def setUp(self):
+        self._hex_str = '3853007f3fd5d97789ddc1fdee84822a5b75290c71ea39e57636675df2b42384'
+        self._bytes = b'8S\x00\x7f?\xd5\xd9w\x89\xdd\xc1\xfd\xee\x84\x82*[u)\x0cq\xea9\xe5v6g]\xf2\xb4#\x84'
+        self._sha3_256_result = 'd67a37d503c31c625d57835c8a16626a8d44f95d319fd94a0720aaa7e59e60be'
+
+    @patch('vanity_address.lib.hash.unhexlify')
+    def test_keccak256_calls_unhexlify(self, unhexlify):
+        unhexlify.return_value = self._bytes
+
+        keccak256(self._hex_str)
+
+        unhexlify.assert_called_once_with(self._hex_str)
+
+    @patch('vanity_address.lib.hash.hashlib.sha3_256')
+    @patch('vanity_address.lib.hash.unhexlify')
+    def test_keccak256_calls_hashlib_sha3_256(self, unhexlify, sha3_256):
+        unhexlify.return_value = self._bytes
+
+        keccak256(self._hex_str)
+
+        sha3_256.assert_called_once_with(self._bytes)
+
+    @patch('vanity_address.lib.hash.hashlib.sha3_256')
+    @patch('vanity_address.lib.hash.unhexlify')
+    def test_keccak256_returns_the_result_of_sha3_256(self, _, sha3_256):
+        sha3_256.return_value.hexdigest.return_value = self._sha3_256_result
+
+        result = keccak256(self._hex_str)
+
+        self.assertEqual(result, self._sha3_256_result)
+
+    def test_keccak256_returns_the_correct_hash(self):
+        result = keccak256(self._hex_str)
+
+        self.assertEqual(result, self._sha3_256_result)
