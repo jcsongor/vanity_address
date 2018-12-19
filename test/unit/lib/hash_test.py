@@ -154,3 +154,8 @@ class RipemdTest(TestCase):
         result = ripemd160(self._hex_str)
 
         self.assertEqual(result, ripemd160_result)
+
+    def test_ripemd160_returns_the_correct_hash(self):
+        result = ripemd160(self._hex_str)
+
+        self.assertEqual(result, self._ripemd160_result)
