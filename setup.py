@@ -14,7 +14,7 @@ setup(
         'console_scripts': ['vanityaddr=vanity_address.generate:main'],
     },
     install_requires=[
-        'ecdsa==0.13',
+        'ecdsa==0.13.3',
         'base58==1.0.2',
     ],
     extras_require={
