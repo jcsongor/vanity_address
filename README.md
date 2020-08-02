@@ -1,4 +1,4 @@
-
+[![Run on Repl.it](https://repl.it/badge/github/jcsongor/vanity_address)](https://repl.it/github/jcsongor/vanity_address)
 [![Build Status](https://travis-ci.org/jcsongor/vanity_address.svg?branch=master)](https://travis-ci.org/jcsongor/vanity_address)
 [![Coverage Status](https://coveralls.io/repos/github/jcsongor/vanity_address/badge.svg)](https://coveralls.io/github/jcsongor/vanity_address)
 
